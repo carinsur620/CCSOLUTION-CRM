@@ -1,163 +1,195 @@
+// ==========================================
+// CCSOLUTION CRM BACKEND
+// ZADARMA CALL INTEGRATION
+// ==========================================
+
+
 const express = require("express");
 const cors = require("cors");
-const axios = require("axios");
-const crypto = require("crypto");
 require("dotenv").config();
+
 const { Api } = require("zadarma-api");
+
+
 
 const app = express();
 
 
+// Middleware
+
 app.use(cors());
+
 app.use(express.json());
 
 
 
+
+// Port
+
 const PORT = process.env.PORT || 5000;
+
+
+
+
+// Zadarma API
+
 const api = new Api(
+
     process.env.ZADARMA_KEY,
+
     process.env.ZADARMA_SECRET
+
 );
 
 
-// TEST
+
+
+
+// ==========================================
+// TEST SERVER
+// ==========================================
+
 
 app.get("/", (req,res)=>{
 
-res.send("CCSolution Backend Running");
+
+    res.send("CCSolution Backend Running");
+
 
 });
 
 
 
 
-// ===============================
-// ZADARMA CALL
-// ===============================
+
+
+// ==========================================
+// START ZADARMA CALL
+// ==========================================
+
 
 app.post("/api/call", async (req,res)=>{
 
-const phone = req.body.phone;
 
+    const phone = req.body.phone;
 
-if(!phone){
 
-return res.json({
 
-success:false,
+    if(!phone){
 
-message:"Phone number missing"
 
-});
+        return res.json({
 
-}
+            success:false,
 
+            message:"Phone number missing"
 
-try{
+        });
 
 
-const key = process.env.ZADARMA_KEY;
+    }
 
-const secret = process.env.ZADARMA_SECRET;
 
 
-// Zadarma API endpoint
 
-const method = "/v1/request/callback/";
 
+    try{
 
 
-const params = {
+        const result = await api.requestCallback({
 
-from: process.env.ZADARMA_SIP,
 
-to: phone
+            from: process.env.ZADARMA_SIP,
 
-};
 
+            to: phone
 
 
-const queryString = new URLSearchParams(params).toString();
+        });
 
 
 
-const signature = crypto
 
-.createHmac("sha1", secret)
+        console.log(
+            "Zadarma Response:",
+            result
+        );
 
-.update(method + queryString)
 
-.digest("base64");
 
 
+        res.json({
 
-const response = await axios.post(
 
-"https://api.zadarma.com" + method,
+            success:true,
 
-queryString,
 
-{
+            message:"Call started",
 
-headers:{
 
-"Authorization":
+            data:result
 
-key + ":" + signature,
 
-"Content-Type":
+        });
 
-"application/x-www-form-urlencoded"
 
-}
 
-}
+    }
 
-);
 
 
+    catch(error){
 
-console.log("Zadarma Response:", response.data);
 
 
+        console.log(
 
-res.json({
+            "Zadarma Error:",
 
-success:true,
+            error
 
-message:"Call started",
+        );
 
-data:response.data
 
-});
 
 
+        res.status(500).json({
 
-}
 
-catch(error){
+            success:false,
 
 
-console.log(
+            message:"Zadarma call failed"
 
-"Zadarma Error:",
 
-error.response?.data || error.message
+        });
 
-);
 
 
+    }
 
-res.status(500).json({
 
-success:false,
-
-message:"Zadarma call failed"
 
 });
 
 
-}
+
+
+
+
+// ==========================================
+// START SERVER
+// ==========================================
+
+
+app.listen(PORT,()=>{
+
+
+    console.log(
+
+        `CCSolution Backend running on port ${PORT}`
+
+    );
 
 
 });
