@@ -1,21 +1,84 @@
+// ==========================================
+// CCSOLUTION CRM
+// FIREBASE LOGIN
+// ==========================================
+
+
+// Firebase imports
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import { 
+getAuth,
+signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+
+
+// Firebase configuration
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyC5jyf2B1qjKz00K57sjdSMCTdv2QV7tMY",
+
+authDomain: "ccsolution-crm.firebaseapp.com",
+
+projectId: "ccsolution-crm",
+
+storageBucket: "ccsolution-crm.firebasestorage.app",
+
+messagingSenderId: "853275270526",
+
+appId: "1:853275270526:web:53d1eb278bd5e99b7b672f"
+
+};
+
+
+
+// Initialize Firebase
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+
+
+
+// LOGIN
+
 document
 .getElementById("loginForm")
-.addEventListener("submit", function(e){
+.addEventListener("submit", async function(e){
 
 
 e.preventDefault();
 
 
-let username =
-document.getElementById("username").value;
+
+const email =
+document.getElementById("username").value.trim();
 
 
-let password =
+
+const password =
 document.getElementById("password").value;
 
 
 
-if(username === "admin" && password === "1234"){
+const errorMessage =
+document.getElementById("error");
+
+
+
+try{
+
+
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
+
 
 
 localStorage.setItem(
@@ -24,19 +87,25 @@ localStorage.setItem(
 );
 
 
-window.location.href="dashboard.html";
 
+window.location.href = "./dashboard.html";
 
-}
-
-else{
-
-
-document.getElementById("error").innerHTML =
-"Wrong username or password";
 
 
 }
+
+catch(err){
+
+console.log(err);
+
+let errorMessage =
+document.getElementById("error");
+
+errorMessage.innerHTML =
+"Wrong email or password";
+
+}
+
 
 
 });

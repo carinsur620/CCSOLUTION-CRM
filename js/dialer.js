@@ -10,6 +10,10 @@ let dialerLeads = [];
 
 let callStartTime = null;
 
+let callTimerInterval = null;
+
+let callSeconds = 0;
+
 
 
 document.addEventListener("DOMContentLoaded", function(){
@@ -31,8 +35,68 @@ console.log("Dialer Lead:", currentLead);
 
 loadDialerLead();
 
-setupCallButton();
 
+setupCallButton();
+setupHangupButton();
+// ===============================
+// HANG UP CALL
+// ===============================
+
+function setupHangupButton(){
+
+
+const button =
+document.getElementById("hangupBtn");
+
+
+
+if(!button)
+return;
+
+
+
+button.addEventListener("click", function(){
+
+
+if(!callStartTime){
+
+alert("No active call");
+
+return;
+
+}
+
+
+
+clearInterval(callTimerInterval);
+
+
+
+let duration =
+document.getElementById("callTimer").textContent;
+
+
+
+saveCallHistory(
+"Call Ended - Duration: " + duration
+);
+
+
+
+alert(
+"Call ended\nDuration: " + duration
+);
+
+
+
+callStartTime = null;
+
+
+
+});
+
+
+}
 setupAppointmentButton();
 
 setupOutcomeButtons();
@@ -42,6 +106,7 @@ setupSaveButton();
 
 
 });
+
 
 
 
@@ -100,6 +165,73 @@ status.textContent =
 currentLead.status || "NEW LEAD";
 
 
+}
+
+
+
+
+
+
+// ===============================
+// CALL TIMER
+// ===============================
+
+
+function startCallTimer(){
+
+
+let timer =
+document.getElementById("callTimer");
+
+
+
+if(!timer)
+return;
+
+
+
+callSeconds = 0;
+
+
+
+clearInterval(callTimerInterval);
+
+
+
+callTimerInterval = setInterval(function(){
+
+
+callSeconds++;
+
+
+
+let minutes =
+Math.floor(callSeconds / 60);
+
+
+
+let seconds =
+callSeconds % 60;
+
+
+
+timer.textContent =
+
+String(minutes).padStart(2,"0")
+
++
+
+":"
+
++
+
+String(seconds).padStart(2,"0");
+
+
+
+},1000);
+
+
 
 }
 
@@ -112,50 +244,104 @@ currentLead.status || "NEW LEAD";
 // START CALL
 // ===============================
 
-function setupCallButton() {
+function setupCallButton(){
 
-    const button = document.querySelector(".call-btn");
 
-    if (!button) return;
+const button =
+document.querySelector(".call-btn");
 
-    button.addEventListener("click", async function () {
 
-        if (!currentLead) {
-            alert("No lead selected");
-            return;
-        }
 
-        callStartTime = new Date();
+if(!button)
+return;
 
-        try {
 
-            const response = await fetch("http://localhost:5000/api/call", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    phone: currentLead.phone
-                })
-            });
 
-            const data = await response.json();
+button.addEventListener("click", async function(){
 
-            alert(data.message);
 
-            saveCallHistory("Started Call");
+if(!currentLead){
 
-        } catch (err) {
+alert("No lead selected");
 
-            console.error(err);
-
-            alert("Cannot connect to backend.");
-
-        }
-
-    });
+return;
 
 }
+
+
+
+callStartTime = new Date();
+
+
+
+startCallTimer();
+
+
+
+try {
+
+
+const response = await fetch(
+
+"https://ccsolution-crm.onrender.com/api/call",
+
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+phone:currentLead.phone
+
+})
+
+}
+
+);
+
+
+
+const data =
+await response.json();
+
+
+
+alert(data.message);
+
+
+
+saveCallHistory("Started Call");
+
+
+
+}
+
+catch(error){
+
+
+console.error(error);
+
+
+alert("Cannot connect to backend.");
+
+
+}
+
+
+
+});
+
+
+}
+
+
+
 
 
 
@@ -202,12 +388,12 @@ JSON.stringify(currentLead)
 window.location.href="appointments.html";
 
 
-
 };
 
 
 
 }
+
 
 
 
@@ -223,9 +409,7 @@ function setupOutcomeButtons(){
 
 
 const buttons =
-document.querySelectorAll(
-".outcome-grid button"
-);
+document.querySelectorAll(".outcome-grid button");
 
 
 
@@ -258,6 +442,7 @@ result;
 updateLead();
 
 
+
 saveCallHistory(result);
 
 
@@ -271,11 +456,11 @@ alert(
 };
 
 
-
 });
 
 
 }
+
 
 
 
@@ -338,8 +523,8 @@ nextLead();
 };
 
 
-
 }
+
 
 
 
@@ -356,8 +541,11 @@ function updateLead(){
 
 let index =
 dialerLeads.findIndex(
+
 lead =>
+
 lead.phone === currentLead.phone
+
 );
 
 
@@ -379,7 +567,6 @@ JSON.stringify(dialerLeads)
 );
 
 
-
 }
 
 
@@ -393,8 +580,8 @@ JSON.stringify(currentLead)
 );
 
 
-
 }
+
 
 
 
@@ -411,8 +598,11 @@ function nextLead(){
 
 let index =
 dialerLeads.findIndex(
+
 lead =>
+
 lead.phone === currentLead.phone
+
 );
 
 
@@ -425,7 +615,9 @@ localStorage.setItem(
 "currentLead",
 
 JSON.stringify(
+
 dialerLeads[index+1]
+
 )
 
 );
@@ -437,20 +629,18 @@ location.reload();
 
 
 }
+
 else{
 
 
-alert(
-"No more leads available"
-);
-
+alert("No more leads available");
 
 
 }
 
 
-
 }
+
 
 
 
@@ -466,31 +656,41 @@ function saveCallHistory(outcome){
 
 
 let history =
+
 JSON.parse(
+
 localStorage.getItem("callHistory")
+
 ) || [];
 
 
 
 history.push({
 
+
 date:
 new Date().toLocaleString(),
+
 
 company:
 currentLead.company,
 
+
 phone:
 currentLead.phone,
+
 
 outcome:
 outcome,
 
+
 agent:
 "Cesar",
 
+
 notes:
 currentLead.notes || ""
+
 
 });
 
@@ -505,8 +705,8 @@ JSON.stringify(history)
 );
 
 
-
 }
+
 
 
 
@@ -519,7 +719,6 @@ JSON.stringify(history)
 // ===============================
 
 window.showScript=function(tabName,button){
-
 
 
 document
@@ -548,11 +747,13 @@ document.getElementById(tabName);
 
 
 if(page)
+
 page.classList.add("active");
 
 
 
 if(button)
+
 button.classList.add("active");
 
 
