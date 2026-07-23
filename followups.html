@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CCSolution CRM | Follow Ups</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+<h2>CCSolution</h2>
+<p>CRM</p>
+</div>
+
+<ul>
+
+<li><a href="dashboard.html"><i class="fa-solid fa-chart-line"></i>Dashboard</a></li>
+
+<li><a href="leads.html"><i class="fa-solid fa-users"></i>Leads</a></li>
+
+<li><a href="dialer.html"><i class="fa-solid fa-phone"></i>Dialer</a></li>
+
+<li><a href="appointments.html"><i class="fa-solid fa-calendar-check"></i>Appointments</a></li>
+
+<li class="active"><a href="followups.html"><i class="fa-solid fa-clock"></i>Follow Ups</a></li>
+
+<li><a href="scripts.html"><i class="fa-solid fa-file-lines"></i>Scripts</a></li>
+
+<li><a href="analytics.html"><i class="fa-solid fa-chart-pie"></i>Analytics</a></li>
+
+<li><a href="settings.html"><i class="fa-solid fa-gear"></i>Settings</a></li>
+
+<li><a href="call-history.html"><i class="fa-solid fa-phone-volume"></i>Call History</a></li>
+
+<li><a href="index.html"><i class="fa-solid fa-right-from-bracket"></i>Logout</a></li>
+
+</ul>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+
+<div>
+
+<h1>Follow Ups</h1>
+
+<p>Customers that require another call</p>
+
+</div>
+
+<div class="user-box">
+
+<div>
+
+<p>Agent</p>
+
+<strong>Cesar</strong>
+
+</div>
+
+<div class="avatar">C</div>
+
+</div>
+
+</div>
+
+<div class="cards">
+
+<div class="card">
+<h4>Today's Follow Ups</h4>
+<h2 id="todayFollowUps">0</h2>
+<p>Scheduled</p>
+</div>
+
+<div class="card">
+<h4>Tomorrow</h4>
+<h2 id="tomorrowFollowUps">0</h2>
+<p>Upcoming</p>
+</div>
+
+<div class="card">
+<h4>Completed</h4>
+<h2 id="completedFollowUps">0</h2>
+<p>Finished</p>
+</div>
+
+<div class="card">
+<h4>Overdue</h4>
+<h2 id="overdueFollowUps">0</h2>
+<p>Needs Attention</p>
+</div>
+
+</div>
+
+<div class="toolbar">
+
+<button onclick="openFollowUpModal()">
+
+<i class="fa-solid fa-plus"></i>
+
+New Follow Up
+
+</button>
+
+</div>
+
+<div class="table-container">
+
+<h2>Follow Up List</h2>
+
+<br>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Company</th>
+
+<th>Phone</th>
+
+<th>Date</th>
+
+<th>Time</th>
+
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody id="followUpTable">
+
+<tr>
+
+<td colspan="5">
+
+No follow ups scheduled
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div id="followUpModal" class="modal">
+
+<div class="modal-content">
+
+<h2>Create Follow Up</h2>
+
+<label>Company</label>
+<input id="followCompany">
+
+<label>Phone</label>
+<input id="followPhone">
+
+<label>Date</label>
+<input type="date" id="followDate">
+
+<label>Time</label>
+<input type="time" id="followTime">
+
+<button onclick="saveFollowUp()">
+
+Save Follow Up
+
+</button>
+
+<button onclick="closeFollowUpModal()">
+
+Cancel
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="js/followups.js"></script>
+
+</body>
+
+</html>

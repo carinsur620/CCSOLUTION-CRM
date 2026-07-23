@@ -1,0 +1,172 @@
+
+
+/* ==========================================
+   DIALER LAYOUT FIX
+========================================== */
+
+
+.crm-layout{
+
+    width:100%;
+    min-height:100vh;
+
+}
+
+
+
+.workspace{
+
+    margin-left:260px;
+
+    width:calc(100% - 260px);
+
+    padding:35px;
+
+    background:#f5f7fb;
+
+    min-height:100vh;
+
+    box-sizing:border-box;
+
+    position:relative;
+
+    z-index:1;
+
+}
+
+
+
+.workspace-top{
+
+    width:100%;
+
+}
+
+
+
+.workspace-grid{
+
+    display:grid;
+
+    grid-template-columns:380px 1fr;
+
+    gap:30px;
+
+    width:100%;
+
+}
+
+
+
+.left-panel,
+.right-panel{
+
+    width:100%;
+
+}
+
+/* ==========================================
+   CCSOLUTION CRM
+   DIALER PAGE
+========================================== */
+
+.crm-layout{
+    display:flex;
+    min-height:100vh;
+}
+
+
+.left-panel,
+.right-panel{
+    width:100%;
+}
+
+.lead-card,
+.assistant-card{
+    background:#fff;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.call-buttons{
+    display:grid;
+    gap:10px;
+    margin:20px 0;
+}
+
+.call-btn,
+.appointment-btn,
+.save-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.call-btn{
+    background:#2563eb;
+    color:white;
+}
+
+.appointment-btn{
+    background:#16a34a;
+    color:white;
+}
+
+.save-btn{
+    background:#111827;
+    color:white;
+}
+
+.outcome-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin:20px 0;
+}
+
+.outcome-grid button{
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.script-window{
+    margin-top:20px;
+}
+
+.script-page{
+    display:none;
+}
+
+.script-page.active{
+    display:block;
+}
+
+.tip{
+    margin-top:20px;
+    background:#dbeafe;
+    border-left:5px solid #2563eb;
+    padding:15px;
+    border-radius:8px;
+}
+
+.objection{
+    margin-bottom:15px;
+    padding:15px;
+    background:#fff;
+    border-left:4px solid orange;
+    border-radius:8px;
+}
+
+textarea{
+    width:100%;
+    min-height:160px;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+}

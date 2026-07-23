@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CCSolution CRM | Leads</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+
+<body>
+
+
+<div class="sidebar">
+
+<div class="logo">
+
+<h2>CCSolution</h2>
+
+<p>CRM</p>
+
+</div>
+
+
+<ul>
+
+<li>
+<a href="dashboard.html">
+<i class="fa-solid fa-chart-line"></i>
+Dashboard
+</a>
+</li>
+
+
+<li class="active">
+<a href="leads.html">
+<i class="fa-solid fa-users"></i>
+Leads
+</a>
+</li>
+
+
+<li>
+<a href="dialer.html">
+<i class="fa-solid fa-phone"></i>
+Dialer
+</a>
+</li>
+
+
+<li>
+<a href="appointments.html">
+<i class="fa-solid fa-calendar-check"></i>
+Appointments
+</a>
+</li>
+
+
+<li>
+<a href="followups.html">
+<i class="fa-solid fa-clock"></i>
+Follow Ups
+</a>
+</li>
+
+
+<li>
+<a href="scripts.html">
+<i class="fa-solid fa-file-lines"></i>
+Scripts
+</a>
+</li>
+
+
+<li>
+<a href="analytics.html">
+<i class="fa-solid fa-chart-pie"></i>
+Analytics
+</a>
+</li>
+
+
+<li>
+<a href="settings.html">
+<i class="fa-solid fa-gear"></i>
+Settings
+</a>
+</li>
+
+
+<li>
+<a href="index.html">
+<i class="fa-solid fa-right-from-bracket"></i>
+Logout
+</a>
+</li>
+
+
+</ul>
+
+</div>
+
+
+
+
+
+
+<div class="main">
+
+
+<div class="topbar">
+
+
+<h1>
+Lead Database
+</h1>
+
+
+<div class="user-box">
+
+<div>
+
+<p>
+Agent
+</p>
+
+<strong>
+Cesar
+</strong>
+
+</div>
+
+
+<div class="avatar">
+C
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="toolbar">
+
+
+<div class="search-box">
+
+<i class="fa-solid fa-search"></i>
+
+<input 
+type="text"
+placeholder="Search company, city, phone">
+
+</div>
+
+
+
+
+<label class="btn">
+
+<i class="fa-solid fa-file-import"></i>
+
+Import CSV
+
+<input
+type="file"
+id="csvFile"
+accept=".csv"
+hidden>
+
+</label>
+
+
+
+<button onclick="exportCSV()">
+
+<i class="fa-solid fa-download"></i>
+
+Export
+
+</button>
+
+
+
+<button onclick="deleteAllLeads()">
+
+<i class="fa-solid fa-trash"></i>
+
+Delete All
+
+</button>
+
+
+
+<button onclick="openLeadModal()">
+
+<i class="fa-solid fa-plus"></i>
+
+Add Lead
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="table-container">
+
+
+<h2>
+Companies
+</h2>
+
+
+<br>
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+Company
+</th>
+
+<th>
+Industry
+</th>
+
+<th>
+Phone
+</th>
+
+<th>
+City
+</th>
+
+<th>
+State
+</th>
+
+<th>
+Status
+</th>
+
+<th>
+Action
+</th>
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="leadTable">
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<h4>
+Total Leads
+</h4>
+
+<h2 id="totalLeads">
+0
+</h2>
+
+<p>
+Companies loaded
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h4>
+Calls Today
+</h4>
+
+<h2 id="callsToday">
+0
+</h2>
+
+<p>
+Outbound calls
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h4>
+Appointments
+</h4>
+
+<h2 id="appointmentsCount">
+0
+</h2>
+
+<p>
+Booked meetings
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h4>
+Interested
+</h4>
+
+<h2>
+0
+</h2>
+
+<p>
+Potential clients
+</p>
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div id="leadModal" class="modal">
+
+
+<div class="modal-content">
+
+
+<h2>
+Add New Lead
+</h2>
+
+
+
+<label>
+Company
+</label>
+
+<input id="companyInput">
+
+
+
+<label>
+Industry
+</label>
+
+<input id="industryInput">
+
+
+
+<label>
+Phone
+</label>
+
+<input id="phoneInput">
+
+
+
+<label>
+City
+</label>
+
+<input id="cityInput">
+
+
+
+<label>
+State
+</label>
+
+<input id="stateInput">
+
+
+
+<br><br>
+
+
+
+<button onclick="saveNewLead()">
+
+Save Lead
+
+</button>
+
+
+
+<button onclick="closeLeadModal()">
+
+Cancel
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+<script src="js/app.js"></script>
+
+
+</body>
+
+</html>

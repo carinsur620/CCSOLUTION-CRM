@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CCSolution CRM | Professional Dialer</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dialer.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="crm-layout">
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+<div class="logo">
+
+<h2>CCSolution</h2>
+
+<p>CRM</p>
+
+</div>
+
+<ul>
+
+<li>
+<a href="dashboard.html">
+<i class="fa-solid fa-chart-line"></i>
+Dashboard
+</a>
+</li>
+
+<li>
+<a href="leads.html">
+<i class="fa-solid fa-users"></i>
+Leads
+</a>
+</li>
+
+<li class="active">
+<a href="dialer.html">
+<i class="fa-solid fa-phone"></i>
+Dialer
+</a>
+</li>
+
+<li>
+<a href="appointments.html">
+<i class="fa-solid fa-calendar-check"></i>
+Appointments
+</a>
+</li>
+<li>
+<a href="followups.html">
+<i class="fa-solid fa-clock"></i>
+Follow Ups
+</a>
+</li>
+
+
+<li>
+<a href="scripts.html">
+<i class="fa-solid fa-file-lines"></i>
+Scripts
+</a>
+</li>
+<li>
+<a href="analytics.html">
+<i class="fa-solid fa-chart-pie"></i>
+Analytics
+</a>
+</li>
+
+<li>
+<a href="settings.html">
+<i class="fa-solid fa-gear"></i>
+Settings
+</a>
+</li>
+
+<li>
+<a href="index.html">
+<i class="fa-solid fa-right-from-bracket"></i>
+Logout
+</a>
+</li>
+
+</ul>
+
+</aside>
+
+<!-- ================= MAIN ================= -->
+
+<main class="workspace">
+
+<div class="workspace-top">
+
+<div>
+
+<h1>Professional Dialer</h1>
+
+<p>Appointment Setting Workspace</p>
+
+</div>
+
+<div class="agent-box">
+
+<i class="fa-solid fa-headset"></i>
+
+Agent
+
+<strong>Cesar</strong>
+
+</div>
+
+</div>
+
+<div class="workspace-grid">
+
+<!-- ========================================================= -->
+
+<!-- LEFT PANEL -->
+
+<!-- ========================================================= -->
+
+<div class="left-panel">
+
+<div class="lead-card">
+
+<h2>
+
+<i class="fa-solid fa-building"></i>
+
+Current Lead
+
+</h2>
+
+<div class="lead-info">
+
+<label>Company</label>
+
+<h3 id="leadCompany">
+
+No Lead Selected
+
+</h3>
+
+</div>
+
+<div class="lead-info">
+
+<label>Industry</label>
+
+<p id="leadIndustry">
+
+HVAC
+
+</p>
+
+</div>
+
+<div class="lead-info">
+
+<label>Phone</label>
+
+<h3 id="leadPhone">
+
++1 (000) 000-0000
+
+</h3>
+
+</div>
+
+<div class="lead-info">
+
+<label>Decision Maker</label>
+
+<input
+type="text"
+placeholder="Owner Name">
+
+</div>
+
+<div class="lead-info">
+
+<label>Website</label>
+
+<input
+type="text"
+placeholder="www.company.com">
+
+</div>
+
+<div class="lead-info">
+
+<label>Location</label>
+
+<input
+type="text"
+placeholder="Dallas, Texas">
+
+</div>
+
+<div class="lead-info">
+
+<label>Status</label>
+
+<span
+class="lead-status"
+id="leadStatus">
+
+NEW LEAD
+
+</span>
+
+</div>
+
+<div class="call-buttons">
+
+<button class="call-btn">
+
+<i class="fa-solid fa-phone"></i>
+
+Start Call
+
+</button>
+
+<button class="appointment-btn" id="appointmentBtn">
+
+<i class="fa-solid fa-calendar-check"></i>
+
+Book Appointment
+
+</button>
+
+</div>
+
+<hr>
+
+<h2>
+
+Call Result
+
+</h2>
+
+<div class="outcome-grid">
+
+<button class="success-btn">
+
+🟢 Interested
+
+</button>
+
+<button class="warning-btn">
+
+🟡 Callback
+
+</button>
+
+<button class="gray-btn">
+
+⚪ No Answer
+
+</button>
+
+<button class="danger-btn">
+
+🔴 Not Interested
+
+</button>
+
+</div>
+
+<hr>
+
+<h2>
+
+Call Notes
+
+</h2>
+
+<textarea
+
+id="callNotes"
+
+placeholder="Write notes while talking with the customer...">
+
+</textarea>
+
+<button class="save-btn">
+
+<i class="fa-solid fa-floppy-disk"></i>
+
+Save & Next Lead
+
+</button>
+
+</div>
+
+</div>
+
+<!-- RIGHT PANEL STARTS BELOW -->
+<!-- ========================================================= -->
+<!-- RIGHT PANEL -->
+<!-- ========================================================= -->
+
+<div class="right-panel">
+
+<div class="assistant-card">
+
+<div class="assistant-header">
+
+<h2>
+
+<i class="fa-solid fa-headset"></i>
+
+Sales Assistant
+
+</h2>
+
+<p>
+Follow the conversation naturally.
+</p>
+
+</div>
+
+<!-- TABS -->
+
+<div class="assistant-tabs">
+
+<button class="assistant-tab active"
+onclick="showScript('opening', this)">
+
+📞 Opening
+
+</button>
+
+<button class="assistant-tab"
+onclick="showScript('discovery', this)">
+
+❓ Discovery
+
+</button>
+
+<button class="assistant-tab"
+onclick="showScript('pitch', this)">
+
+💡 Pitch
+
+</button>
+
+<button class="assistant-tab"
+onclick="showScript('objections', this)">
+
+🚫 Objections
+
+</button>
+
+<button class="assistant-tab"
+onclick="showScript('closing', this)">
+
+📅 Closing
+
+</button>
+
+</div>
+
+<!-- SCRIPT WINDOW -->
+
+<div class="script-window">
+
+<!-- OPENING -->
+
+<div id="opening" class="script-page active">
+
+<h3>Opening</h3>
+
+<p>
+
+Hi, is this the owner or the person in charge?
+
+</p>
+
+<p>
+
+Great!
+
+My name is <strong>Cesar</strong> calling from CCSolution.
+
+Did I catch you at a bad time?
+
+</p>
+
+<div class="tip">
+
+💡 Wait for the customer to answer before continuing.
+
+</div>
+
+</div>
+
+<!-- DISCOVERY -->
+
+<div id="discovery" class="script-page">
+
+<h3>Discovery Questions</h3>
+
+<ul>
+
+<li>How are you currently getting most of your customers?</li>
+
+<li>Are you happy with the number of calls you're receiving?</li>
+
+<li>Are you looking to grow your business this year?</li>
+
+<li>What's your biggest challenge right now?</li>
+
+</ul>
+
+</div>
+
+<!-- PITCH -->
+
+<div id="pitch" class="script-page">
+
+<h3>Value Statement</h3>
+
+<p>
+
+We help HVAC companies generate qualified appointments so you and your technicians can spend more time running profitable jobs instead of searching for customers.
+
+</p>
+
+<p>
+
+Our goal is simple:
+
+Generate conversations that become paying customers.
+
+</p>
+
+</div>
+
+<!-- OBJECTIONS -->
+
+<div id="objections" class="script-page">
+
+<h3>Quick Responses</h3>
+
+<div class="objection">
+
+<strong>We're Busy</strong>
+
+<p>
+
+I completely understand.
+
+That's actually why I called.
+
+When would be a better time?
+
+</p>
+
+</div>
+
+<div class="objection">
+
+<strong>Not Interested</strong>
+
+<p>
+
+No problem.
+
+Before I let you go...
+
+Can I ask what's working well for you today?
+
+</p>
+
+</div>
+
+<div class="objection">
+
+<strong>Send Information</strong>
+
+<p>
+
+Absolutely.
+
+What's the best email?
+
+</p>
+
+</div>
+
+</div>
+
+<!-- CLOSING -->
+
+<div id="closing" class="script-page">
+
+<h3>Book Appointment</h3>
+
+<p>
+
+Would you be open to a quick 10-minute conversation to see if we could help your business?
+
+</p>
+
+<p>
+
+If not, no problem at all.
+
+</p>
+
+<div class="tip">
+
+📅 Once they agree, click the Appointment button on the left.
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+</div>
+
+<script src="js/dialer.js"></script>
+
+</body>
+
+</html>
