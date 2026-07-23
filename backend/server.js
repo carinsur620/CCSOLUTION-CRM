@@ -3,45 +3,22 @@
 // ZADARMA CALL INTEGRATION
 // ==========================================
 
-
 const express = require("express");
 const cors = require("cors");
+const axios = require("axios");
+const crypto = require("crypto");
 require("dotenv").config();
-
-const { Api } = require("zadarma-api");
-
 
 
 const app = express();
 
 
-// Middleware
-
 app.use(cors());
-
 app.use(express.json());
 
 
 
-
-// Port
-
 const PORT = process.env.PORT || 5000;
-
-
-
-
-// Zadarma API
-
-const api = new Api(
-
-    process.env.ZADARMA_KEY,
-
-    process.env.ZADARMA_SECRET
-
-);
-
-
 
 
 
@@ -49,12 +26,9 @@ const api = new Api(
 // TEST SERVER
 // ==========================================
 
-
 app.get("/", (req,res)=>{
 
-
     res.send("CCSolution Backend Running");
-
 
 });
 
@@ -62,11 +36,9 @@ app.get("/", (req,res)=>{
 
 
 
-
 // ==========================================
-// START ZADARMA CALL
+// ZADARMA CALL
 // ==========================================
-
 
 app.post("/api/call", async (req,res)=>{
 
@@ -74,9 +46,7 @@ app.post("/api/call", async (req,res)=>{
     const phone = req.body.phone;
 
 
-
     if(!phone){
-
 
         return res.json({
 
@@ -86,33 +56,83 @@ app.post("/api/call", async (req,res)=>{
 
         });
 
-
     }
-
-
 
 
 
     try{
 
 
-        const result = await api.requestCallback({
+        const method = "/v1/request/callback/";
 
 
-            from: process.env.ZADARMA_SIP,
 
+        const params = new URLSearchParams({
 
-            to: phone
+            from:"929923",
 
+            to:phone
 
         });
 
 
 
+        const signature = crypto
+
+        .createHmac(
+
+            "sha1",
+
+            process.env.ZADARMA_SECRET
+
+        )
+
+        .update(
+
+            method + params.toString()
+
+        )
+
+        .digest("base64");
+
+
+
+
+
+        const response = await axios.post(
+
+            "https://api.zadarma.com" + method,
+
+            params.toString(),
+
+            {
+
+                headers:{
+
+                    "Authorization":
+
+                    process.env.ZADARMA_KEY + ":" + signature,
+
+
+                    "Content-Type":
+
+                    "application/x-www-form-urlencoded"
+
+                }
+
+            }
+
+        );
+
+
+
 
         console.log(
-            "Zadarma Response:",
-            result
+
+            "Zadarma:",
+
+            response.data
+
         );
 
 
@@ -120,25 +140,19 @@ app.post("/api/call", async (req,res)=>{
 
         res.json({
 
-
             success:true,
-
 
             message:"Call started",
 
-
-            data:result
-
+            data:response.data
 
         });
 
 
 
-    }
 
 
-
-    catch(error){
+    }catch(error){
 
 
 
@@ -146,21 +160,19 @@ app.post("/api/call", async (req,res)=>{
 
             "Zadarma Error:",
 
-            error
+            error.response?.data || error.message
 
         );
 
 
 
-
         res.status(500).json({
-
 
             success:false,
 
+            message:"Zadarma call failed",
 
-            message:"Zadarma call failed"
-
+            error:error.response?.data || error.message
 
         });
 
@@ -171,6 +183,7 @@ app.post("/api/call", async (req,res)=>{
 
 
 });
+
 
 
 
