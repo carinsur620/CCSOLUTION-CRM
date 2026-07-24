@@ -53,7 +53,9 @@ document
 
 
         const uid =
-        userCredential.user.uid;
+userCredential.user.uid;
+
+console.log("LOGIN UID:", uid);
 
 
 
