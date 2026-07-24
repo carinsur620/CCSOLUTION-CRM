@@ -291,3 +291,62 @@ async function saveNewLead(){
     }
 
 }
+// ==========================================
+// IMPORT CSV
+// ==========================================
+
+document.getElementById("csvFile").addEventListener("change", importCSV);
+
+async function importCSV(event){
+
+    const file = event.target.files[0];
+
+    if(!file) return;
+
+    Papa.parse(file,{
+
+        header:true,
+
+        skipEmptyLines:true,
+
+        complete: async function(results){
+
+            const db = firebase.firestore();
+
+            let imported = 0;
+
+            for(const row of results.data){
+
+                await db.collection("leads").add({
+
+                    company: row.Company || "",
+
+                    industry: row.Industry || "",
+
+                    phone: row.Phone || "",
+
+                    city: row.City || "",
+
+                    state: row.State || "",
+
+                    status: row.Status || "Not Called",
+
+                    assignedTo: row.AssignedTo || "",
+
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+
+                });
+
+                imported++;
+
+            }
+
+            alert(imported + " leads imported successfully!");
+
+            location.reload();
+
+        }
+
+    });
+
+}
