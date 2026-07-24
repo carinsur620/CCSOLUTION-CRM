@@ -217,3 +217,77 @@ table.innerHTML += `
 
 
 }
+// ==========================================
+// ADD NEW LEAD
+// ==========================================
+
+async function saveNewLead(){
+
+    const db = firebase.firestore();
+
+    const company = document.getElementById("companyInput").value.trim();
+    const industry = document.getElementById("industryInput").value.trim();
+    const phone = document.getElementById("phoneInput").value.trim();
+    const city = document.getElementById("cityInput").value.trim();
+    const state = document.getElementById("stateInput").value.trim();
+    const assignedTo = document.getElementById("assignedToInput").value;
+
+    if(company === ""){
+
+        alert("Company name is required.");
+
+        return;
+
+    }
+
+    try{
+
+        await db.collection("leads").add({
+
+            company: company,
+            industry: industry,
+            phone: phone,
+            city: city,
+            state: state,
+
+            assignedTo: assignedTo,
+
+            status: "Not Called",
+
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+
+        });
+
+        alert("Lead added successfully!");
+
+        document.getElementById("companyInput").value = "";
+        document.getElementById("industryInput").value = "";
+        document.getElementById("phoneInput").value = "";
+        document.getElementById("cityInput").value = "";
+        document.getElementById("stateInput").value = "";
+
+        document.getElementById("leadModal").style.display = "none";
+
+        firebase.auth().onAuthStateChanged(async(user)=>{
+
+            if(user){
+
+                const userDoc = await db.collection("users")
+                    .doc(user.uid)
+                    .get();
+
+                loadLeads(user,userDoc.data().role);
+
+            }
+
+        });
+
+    }catch(error){
+
+        console.error(error);
+
+        alert("Error saving lead.");
+
+    }
+
+}
