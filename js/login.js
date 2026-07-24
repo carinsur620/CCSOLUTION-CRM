@@ -122,17 +122,17 @@ console.log("LOGIN UID:", uid);
 
 
     }
-    catch(error){
+    catch (error) {
 
+    console.error("FULL ERROR:", error);
+    console.log("CODE:", error.code);
+    console.log("MESSAGE:", error.message);
+    console.log("CUSTOM DATA:", error.customData);
 
-        console.error(error);
+    document.getElementById("error").innerHTML =
+        error.code + "<br>" + error.message;
 
-
-        errorMessage.innerHTML =
-        error.code + " : " + error.message;
-
-
-    }
+}
 
 
 });
