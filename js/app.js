@@ -158,41 +158,49 @@ async function loadLeads(user, role){
 
 
 
-        table.innerHTML += `
+        let assignedName = "Unassigned";
 
-        <tr>
+if(lead.assignedTo === "XWXj9uS6RBfsR4YjH7qmwxrE2KD2"){
+    assignedName = "Casmel";
+}
 
-            <td>${lead.company || ""}</td>
+if(lead.assignedTo === "a8MPvebCNbZFJWHuSG6gecuBmp12"){
+    assignedName = "Nicson";
+}
 
-            <td>${lead.industry || ""}</td>
+table.innerHTML += `
 
-            <td>${lead.phone || ""}</td>
+<tr>
 
-            <td>${lead.city || ""}</td>
+    <td>${lead.company || ""}</td>
 
-            <td>${lead.state || ""}</td>
+    <td>${lead.industry || ""}</td>
 
-            <td>${lead.status || "Not Called"}</td>
+    <td>${lead.phone || ""}</td>
 
+    <td>${lead.city || ""}</td>
 
-            <td>
+    <td>${lead.state || ""}</td>
 
-            <button onclick="callLead('${lead.phone}')">
+    <td>${assignedName}</td>
 
-            <i class="fa-solid fa-phone"></i>
+    <td>${lead.status || "Not Called"}</td>
 
-            Call
+    <td>
 
-            </button>
+        <button onclick="callLead('${lead.phone}')">
 
+        <i class="fa-solid fa-phone"></i>
 
-            </td>
+        Call
 
+        </button>
 
-        </tr>
+    </td>
 
-        `;
+</tr>
 
+`;
 
     });
 
