@@ -1,87 +1,136 @@
 // ==========================================
 // CCSOLUTION CRM
 // FIREBASE LOGIN
+// Firebase Modular SDK
 // ==========================================
 
-// Firebase imports
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { auth, db } from "./firebase-config.js";
 
 import {
-  getAuth,
-  signInWithEmailAndPassword
+    signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 import {
-  getFirestore,
-  doc,
-  getDoc
+    doc,
+    getDoc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyC5jyf2B1qjKz00K57sjdSMCTdv2QV7tMY",
-  authDomain: "ccsolution-crm.firebaseapp.com",
-  projectId: "ccsolution-crm",
-  storageBucket: "ccsolution-crm.firebasestorage.app",
-  messagingSenderId: "853275270526",
-  appId: "1:853275270526:web:53d1eb278bd5e99b7b672f"
-};
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// LOGIN FORM
 
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// LOGIN
 document
-  .getElementById("loginForm")
-  .addEventListener("submit", async function (e) {
+.getElementById("loginForm")
+.addEventListener("submit", async (e)=>{
+
 
     e.preventDefault();
 
+
     const email =
-      document.getElementById("username").value.trim();
+    document.getElementById("username").value.trim();
+
 
     const password =
-      document.getElementById("password").value;
+    document.getElementById("password").value;
+
 
     const errorMessage =
-      document.getElementById("error");
+    document.getElementById("error");
 
-    try {
 
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
 
-      const uid = userCredential.user.uid;
+    try{
 
-      const userRef = doc(db, "users", uid);
-      const userSnap = await getDoc(userRef);
 
-      if (!userSnap.exists()) {
-        errorMessage.innerHTML = "User profile not found.";
-        return;
-      }
+        // Firebase Authentication Login
 
-      const userData = userSnap.data();
+        const userCredential =
+        await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
 
-      localStorage.setItem("loggedIn", "true");
-      localStorage.setItem("uid", uid);
-      localStorage.setItem("role", userData.role);
-      localStorage.setItem("name", userData.name);
 
-      window.location.href = "./dashboard.html";
+        const uid =
+        userCredential.user.uid;
 
-    } catch (err) {
 
-      console.error(err);
 
-      errorMessage.innerHTML = "Wrong email or password";
+        // Get user profile from Firestore
+
+        const userRef =
+        doc(db,"users",uid);
+
+
+        const userSnap =
+        await getDoc(userRef);
+
+
+
+        if(!userSnap.exists()){
+
+
+            errorMessage.innerHTML =
+            "User profile not found in database.";
+
+            return;
+
+        }
+
+
+
+        const userData =
+        userSnap.data();
+
+
+
+        // Save session information
+
+        localStorage.setItem(
+            "loggedIn",
+            "true"
+        );
+
+
+        localStorage.setItem(
+            "uid",
+            uid
+        );
+
+
+        localStorage.setItem(
+            "role",
+            userData.role || "agent"
+        );
+
+
+        localStorage.setItem(
+            "name",
+            userData.name || "Agent"
+        );
+
+
+
+        // Redirect
+
+        window.location.href =
+        "dashboard.html";
+
+
+
+    }
+    catch(error){
+
+
+        console.error(error);
+
+
+        errorMessage.innerHTML =
+        error.code + " : " + error.message;
+
 
     }
 
-  });
+
+});

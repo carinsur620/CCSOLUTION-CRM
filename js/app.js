@@ -1,148 +1,272 @@
 // ==========================================
-// CCSOLUTION CRM DASHBOARD
+// CCSOLUTION CRM
+// APP LOGIC
+// Firebase Modular SDK
 // ==========================================
 
-// Check login
-firebase.auth().onAuthStateChanged(async (user) => {
 
-    if (!user) {
-        window.location.href = "index.html";
+import { auth, db } from "./firebase-config.js";
+
+
+import {
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+
+import {
+    collection,
+    query,
+    where,
+    getDocs,
+    getDoc,
+    doc,
+    addDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+
+
+// ==========================================
+// CHECK LOGIN
+// ==========================================
+
+onAuthStateChanged(auth, async(user)=>{
+
+
+    if(!user){
+
+        window.location.href="index.html";
         return;
+
     }
 
-    const db = firebase.firestore();
 
-    // Load logged user
-    const userDoc = await db.collection("users")
-        .doc(user.uid)
-        .get();
 
-    if(userDoc.exists){
+    const userSnap =
+    await getDoc(
+        doc(db,"users",user.uid)
+    );
 
-        const data = userDoc.data();
 
-        // User name
+
+    if(userSnap.exists()){
+
+
+        const data =
+        userSnap.data();
+
+
+
         if(document.querySelector(".user-box strong")){
+
             document.querySelector(".user-box strong").innerText =
-                data.name || "Agent";
+            data.name || "Agent";
+
         }
 
-        // Role
+
+
         if(document.querySelector(".user-box p")){
+
             document.querySelector(".user-box p").innerText =
-                data.role || "Agent";
+            data.role || "Agent";
+
         }
 
-        // Avatar
+
+
         if(document.querySelector(".avatar")){
+
             document.querySelector(".avatar").innerText =
-                (data.name || "A").charAt(0).toUpperCase();
+            (data.name || "A")
+            .charAt(0)
+            .toUpperCase();
+
         }
 
-        // Dashboard page
+
+
         if(document.getElementById("leadCount")){
-           loadDashboard(user, data.role);
+
+            loadDashboard(user,data.role);
+
         }
 
-        // Leads page
+
+
         if(document.getElementById("leadTable")){
+
             loadLeads(user,data.role);
+
         }
+
+
 
     }
+
 
 });
 
-async function loadDashboard(user, role){
 
-    const db = firebase.firestore();
 
-    // LEADS
+
+
+// ==========================================
+// DASHBOARD
+// ==========================================
+
+
+async function loadDashboard(user,role){
+
 
     let leads;
 
-if(role === "admin"){
 
-    leads = await db.collection("leads").get();
 
-}else{
+    if(role==="admin"){
 
-    leads = await db.collection("leads")
-        .where("assignedTo","==",user.uid)
-        .get();
 
-}
-document.getElementById("leadCount").innerText =
-    leads.size;
-    // APPOINTMENTS
+        leads =
+        await getDocs(
+            collection(db,"leads")
+        );
 
-    const appointments = await db.collection("appointments").get();
 
-    document.getElementById("appointmentsCount").innerText =
+    }else{
+
+
+        const q =
+        query(
+            collection(db,"leads"),
+            where("assignedTo","==",user.uid)
+        );
+
+
+        leads =
+        await getDocs(q);
+
+
+    }
+
+
+
+
+    if(document.getElementById("leadCount")){
+
+        document.getElementById("leadCount").innerText =
+        leads.size;
+
+    }
+
+
+
+
+    const appointments =
+    await getDocs(
+        collection(db,"appointments")
+    );
+
+
+
+    if(document.getElementById("appointmentsCount")){
+
+        document.getElementById("appointmentsCount").innerText =
         appointments.size;
 
-    // CALLS
+    }
 
-    const calls = await db.collection("calls")
-        .where("agentId","==",user.uid)
-        .get();
 
-    document.getElementById("callsToday").innerText =
+
+
+    const calls =
+    await getDocs(
+        query(
+            collection(db,"calls"),
+            where("agentId","==",user.uid)
+        )
+    );
+
+
+
+    if(document.getElementById("callsToday")){
+
+        document.getElementById("callsToday").innerText =
         calls.size;
 
+    }
+
+
 }
+
+
+
+
+
+
 // ==========================================
-// CCSOLUTION CRM
-// LOAD LEADS FROM FIRESTORE
+// LOAD LEADS
 // ==========================================
 
-async function loadLeads(user, role){
 
-    const db = firebase.firestore();
+async function loadLeads(user,role){
+
 
     let leads;
 
 
-    // ADMIN SEES ALL LEADS
-    if(role === "admin"){
 
-        leads = await db.collection("leads").get();
+    if(role==="admin"){
+
+
+        leads =
+        await getDocs(
+            collection(db,"leads")
+        );
+
+
+    }else{
+
+
+        leads =
+        await getDocs(
+            query(
+                collection(db,"leads"),
+                where(
+                    "assignedTo",
+                    "==",
+                    user.uid
+                )
+            )
+        );
+
 
     }
 
-    // AGENTS ONLY SEE THEIR ASSIGNED LEADS
-    else{
 
-        leads = await db.collection("leads")
-            .where("assignedTo","==",user.uid)
-            .get();
 
-    }
+    const table =
+    document.getElementById("leadTable");
 
 
 
-    const table = document.getElementById("leadTable");
+    table.innerHTML="";
 
-
-    table.innerHTML = "";
 
 
 
     if(leads.empty){
 
-        table.innerHTML = `
+
+        table.innerHTML=`
 
         <tr>
-
-        <td colspan="7">
-
+        <td colspan="8">
         No leads assigned
-
         </td>
-
         </tr>
 
         `;
+
 
         return;
 
@@ -151,42 +275,57 @@ async function loadLeads(user, role){
 
 
 
-    leads.forEach(doc=>{
+    leads.forEach((doc)=>{
 
 
-        const lead = doc.data();
+        const lead =
+        doc.data();
 
 
 
-        let assignedName = "Unassigned";
+        let assignedName =
+        "Unassigned";
 
-if(lead.assignedTo === "XWXj9uS6RBfsR4YjH7qmwxrE2KD2"){
-    assignedName = "Casmel";
-}
 
-if(lead.assignedTo === "a8MPvebCNbZFJWHuSG6gecuBmp12"){
-    assignedName = "Nicson";
-}
 
-table.innerHTML += `
+        if(lead.assignedTo==="XWXj9uS6RBfsR4YjH7qmwxrE2KD2"){
 
-<tr>
+            assignedName="Casmel";
 
-    <td>${lead.company || ""}</td>
+        }
 
-    <td>${lead.industry || ""}</td>
 
-    <td>${lead.phone || ""}</td>
 
-    <td>${lead.city || ""}</td>
+        if(lead.assignedTo==="a8MPvebCNbZFJWHuSG6gecuBmp12"){
 
-    <td>${lead.state || ""}</td>
+            assignedName="Nicson";
 
-    <td>${assignedName}</td>
+        }
 
-    <td>${lead.status || "Not Called"}</td>
 
-    <td>
+
+
+        table.innerHTML += `
+
+
+        <tr>
+
+        <td>${lead.company || ""}</td>
+
+        <td>${lead.industry || ""}</td>
+
+        <td>${lead.phone || ""}</td>
+
+        <td>${lead.city || ""}</td>
+
+        <td>${lead.state || ""}</td>
+
+        <td>${assignedName}</td>
+
+        <td>${lead.status || "Not Called"}</td>
+
+
+        <td>
 
         <button onclick="callLead('${lead.phone}')">
 
@@ -196,157 +335,104 @@ table.innerHTML += `
 
         </button>
 
-    </td>
+        </td>
 
-</tr>
 
-`;
+        </tr>
+
+
+        `;
+
 
     });
 
 
 
-    // Update counter
+
 
     if(document.getElementById("totalLeads")){
 
+
         document.getElementById("totalLeads").innerText =
-            leads.size;
+        leads.size;
+
 
     }
+
 
 
 }
+
+
+
+
+
+
 // ==========================================
-// ADD NEW LEAD
-// ==========================================
-
-async function saveNewLead(){
-
-    const db = firebase.firestore();
-
-    const company = document.getElementById("companyInput").value.trim();
-    const industry = document.getElementById("industryInput").value.trim();
-    const phone = document.getElementById("phoneInput").value.trim();
-    const city = document.getElementById("cityInput").value.trim();
-    const state = document.getElementById("stateInput").value.trim();
-    const assignedTo = document.getElementById("assignedToInput").value;
-
-    if(company === ""){
-
-        alert("Company name is required.");
-
-        return;
-
-    }
-
-    try{
-
-        await db.collection("leads").add({
-
-            company: company,
-            industry: industry,
-            phone: phone,
-            city: city,
-            state: state,
-
-            assignedTo: assignedTo,
-
-            status: "Not Called",
-
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-
-        });
-
-        alert("Lead added successfully!");
-
-        document.getElementById("companyInput").value = "";
-        document.getElementById("industryInput").value = "";
-        document.getElementById("phoneInput").value = "";
-        document.getElementById("cityInput").value = "";
-        document.getElementById("stateInput").value = "";
-
-        document.getElementById("leadModal").style.display = "none";
-
-        firebase.auth().onAuthStateChanged(async(user)=>{
-
-            if(user){
-
-                const userDoc = await db.collection("users")
-                    .doc(user.uid)
-                    .get();
-
-                loadLeads(user,userDoc.data().role);
-
-            }
-
-        });
-
-    }catch(error){
-
-        console.error(error);
-
-        alert("Error saving lead.");
-
-    }
-
-}
-// ==========================================
-// IMPORT CSV
+// ADD LEAD
 // ==========================================
 
-document.getElementById("csvFile").addEventListener("change", importCSV);
 
-async function importCSV(event){
+window.saveNewLead = async function(){
 
-    const file = event.target.files[0];
 
-    if(!file) return;
 
-    Papa.parse(file,{
+    const company =
+    document.getElementById("companyInput").value.trim();
 
-        header:true,
 
-        skipEmptyLines:true,
 
-        complete: async function(results){
+    const industry =
+    document.getElementById("industryInput").value.trim();
 
-            const db = firebase.firestore();
 
-            let imported = 0;
 
-            for(const row of results.data){
+    const phone =
+    document.getElementById("phoneInput").value.trim();
 
-                await db.collection("leads").add({
 
-                    company: row.Company || "",
 
-                    industry: row.Industry || "",
+    const city =
+    document.getElementById("cityInput").value.trim();
 
-                    phone: row.Phone || "",
 
-                    city: row.City || "",
 
-                    state: row.State || "",
+    const state =
+    document.getElementById("stateInput").value.trim();
 
-                    status: row.Status || "Not Called",
 
-                    assignedTo: row.AssignedTo || "",
 
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    const assignedTo =
+    document.getElementById("assignedToInput").value;
 
-                });
 
-                imported++;
 
-            }
 
-            alert(imported + " leads imported successfully!");
+    await addDoc(
+        collection(db,"leads"),
+        {
 
-            location.reload();
+            company,
+            industry,
+            phone,
+            city,
+            state,
+
+            assignedTo,
+
+            status:"Not Called",
+
+            createdAt:
+            serverTimestamp()
 
         }
+    );
 
-    });
 
-}
+
+    alert("Lead added successfully");
+
+    location.reload();
+
+
+};
